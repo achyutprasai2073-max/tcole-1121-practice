@@ -4,6 +4,1750 @@
 <section id="home"><div class="card"><h2 style="margin-top:0">Practice like the licensing exam</h2><p class="muted">Original study questions in a TCOLE-style multiple-choice format. Not official or copied exam questions.</p><div class="row"><span class="pill">100-question simulation</span><span class="pill">90-minute timer</span><span class="pill">automatic scoring</span><span class="pill">missed-question review</span></div></div><div class="grid"><div class="mode"><h3>Exam Simulation</h3><p class="muted">100 randomized questions, 90 minutes, score at the end.</p><button class="btn primary" onclick="startExam('exam')">Start 100-Question Exam</button></div><div class="mode"><h3>Study Mode</h3><p class="muted">20 randomized questions with instant answer explanations.</p><button class="btn" onclick="startExam('study')">Start Study Mode</button></div><div class="mode"><h3>Medical / EMT Review</h3><p class="muted">Focus on inmate medical care, emergencies, suicide prevention, and related topics.</p><button class="btn" onclick="startExam('medical')">Start Medical Practice</button></div><div class="mode"><h3>Missed Questions</h3><p class="muted">Retry questions you missed on this device.</p><button class="btn" onclick="startMissed()">Practice Missed Questions</button></div></div><div class="card"><div class="row space"><div><b>Best Exam Score</b><div class="muted" id="bestScore">No score saved yet</div></div><button class="btn danger" onclick="resetProgress()">Reset Saved Progress</button></div></div></section>
 <section id="quiz" class="hidden"><div class="card"><div class="row space"><div><span class="pill" id="modeLabel">Exam</span> <span class="pill" id="counter">1 / 100</span></div><div class="timer" id="timer">90:00</div></div><div class="progress"><div id="bar"></div></div></div><div class="card"><div class="question" id="questionText"></div><div id="choices"></div><div id="explanation" class="explain hidden"></div><div class="row space" style="margin-top:16px"><button class="btn" onclick="prevQuestion()">← Previous</button><div class="row"><button class="btn" id="flagBtn" onclick="toggleFlag()">Flag</button><button class="btn primary" id="nextBtn" onclick="nextQuestion()">Next →</button></div></div><div class="navgrid" id="navgrid"></div></div></section>
 <section id="result" class="hidden"><div class="card"><h2 style="margin-top:0">Your Result</h2><div class="score" id="scoreText"></div><div class="muted" id="scoreNote"></div><div class="stats" style="margin-top:15px"><div class="stat"><b id="correctStat">0</b>Correct</div><div class="stat"><b id="wrongStat">0</b>Wrong</div><div class="stat"><b id="unansweredStat">0</b>Unanswered</div></div><div class="row" style="margin-top:16px"><button class="btn primary" onclick="reviewMissed()">Review Missed</button><button class="btn" onclick="goHome()">Back Home</button><button class="btn" onclick="startExam('exam')">New Exam</button></div></div><div id="reviewList"></div></section>
-<script src="questions.js"></script><script>
+<script>
+window.QUESTION_BANK = [
+  {
+    "module": "Professionalism",
+    "text": "A jailer receives confidential medical information about an inmate. What is the best action?",
+    "choices": [
+      "Share it with coworkers who are curious",
+      "Discuss it only with personnel who have a legitimate need to know",
+      "Post it in a group chat so the shift is aware",
+      "Tell other inmates so they can help monitor the person"
+    ],
+    "answer": 1,
+    "explanation": "Confidential information should be limited to legitimate official need-to-know purposes."
+  },
+  {
+    "module": "Professionalism",
+    "text": "Which action best demonstrates professional conduct by a county jailer?",
+    "choices": [
+      "Applying rules consistently and documenting actions accurately",
+      "Ignoring minor violations by inmates the jailer likes",
+      "Using sarcasm to establish authority",
+      "Changing procedures based on personal preference"
+    ],
+    "answer": 0,
+    "explanation": "Professionalism includes consistency, impartiality, accurate documentation, and adherence to policy."
+  },
+  {
+    "module": "Professionalism",
+    "text": "A jailer is offered a gift by an inmate’s family member in exchange for “looking out for him.” The jailer should:",
+    "choices": [
+      "Accept if the gift is inexpensive",
+      "Accept but report it later",
+      "Decline and report the attempted influence according to policy",
+      "Give the gift to another employee"
+    ],
+    "answer": 2,
+    "explanation": "Gifts tied to favorable treatment create an ethical conflict and should be declined and reported."
+  },
+  {
+    "module": "Legal Responsibilities",
+    "text": "The primary reason jail staff should follow written policy and document significant actions is to:",
+    "choices": [
+      "Create extra paperwork",
+      "Support accountability, continuity, and lawful operations",
+      "Avoid speaking to supervisors",
+      "Replace direct observation"
+    ],
+    "answer": 1,
+    "explanation": "Good documentation supports safety, accountability, continuity of care, and legal review."
+  },
+  {
+    "module": "Legal Responsibilities",
+    "text": "Which constitutional principle is most directly associated with protection from cruel and unusual punishment?",
+    "choices": [
+      "First Amendment",
+      "Fourth Amendment",
+      "Eighth Amendment",
+      "Tenth Amendment"
+    ],
+    "answer": 2,
+    "explanation": "The Eighth Amendment prohibits cruel and unusual punishment."
+  },
+  {
+    "module": "Legal Responsibilities",
+    "text": "Pretrial detainees are generally persons who:",
+    "choices": [
+      "Have completed their sentence",
+      "Are being held while their criminal case is pending",
+      "Are serving a federal prison sentence only",
+      "Have been released from custody"
+    ],
+    "answer": 1,
+    "explanation": "A pretrial detainee is held while charges/court proceedings are pending."
+  },
+  {
+    "module": "Legal Responsibilities",
+    "text": "A jailer deliberately ignores a serious, obvious medical need. This can create:",
+    "choices": [
+      "No concern if the inmate is difficult",
+      "Potential constitutional and civil liability",
+      "Only a classification issue",
+      "Only a property issue"
+    ],
+    "answer": 1,
+    "explanation": "Ignoring serious medical needs can create serious constitutional and civil liability."
+  },
+  {
+    "module": "Legal Responsibilities",
+    "text": "An inmate files a grievance. The most appropriate staff response is to:",
+    "choices": [
+      "Retaliate for complaining",
+      "Follow the established grievance process and document the response",
+      "Destroy the grievance if it seems minor",
+      "Require the inmate to withdraw it"
+    ],
+    "answer": 1,
+    "explanation": "Grievances should be handled through established procedures without retaliation."
+  },
+  {
+    "module": "Legal Responsibilities",
+    "text": "Retaliating against an inmate for using an authorized grievance process is:",
+    "choices": [
+      "Acceptable if the complaint is unfounded",
+      "A proper disciplinary tool",
+      "Improper and potentially unlawful",
+      "Required to maintain order"
+    ],
+    "answer": 2,
+    "explanation": "Retaliation for exercising protected or authorized rights is improper."
+  },
+  {
+    "module": "Legal Responsibilities",
+    "text": "Which statement about inmate discipline is best?",
+    "choices": [
+      "Discipline should be arbitrary to maintain uncertainty",
+      "Discipline should follow established rules and due-process requirements",
+      "Only verbal punishment should be used",
+      "Discipline never requires documentation"
+    ],
+    "answer": 1,
+    "explanation": "Disciplinary processes should be consistent, documented, and compliant with applicable due process."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "During a security round, a jailer finds a damaged door lock. What should happen first?",
+    "choices": [
+      "Ignore it until maintenance day",
+      "Take appropriate immediate security precautions and report the defect",
+      "Ask an inmate to repair it",
+      "Leave the area unsecured while completing paperwork"
+    ],
+    "answer": 1,
+    "explanation": "Security defects require prompt action to reduce risk, followed by notification/documentation."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "The main purpose of an inmate count is to:",
+    "choices": [
+      "Estimate meal portions only",
+      "Verify the location and accountability of inmates",
+      "Determine which inmates want recreation",
+      "Replace housing inspections"
+    ],
+    "answer": 1,
+    "explanation": "Counts are a core accountability and security function."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "A controlled key system is important because keys:",
+    "choices": [
+      "Are inexpensive",
+      "Can provide access to secure areas and must be strictly accounted for",
+      "Should be loaned to trusted inmates",
+      "Do not affect facility security"
+    ],
+    "answer": 1,
+    "explanation": "Keys can compromise secure areas if lost or misused."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "Before opening a secure door, a jailer should primarily:",
+    "choices": [
+      "Assume the other side is safe",
+      "Maintain situational awareness and follow access-control procedures",
+      "Let inmates decide when it opens",
+      "Disable communications"
+    ],
+    "answer": 1,
+    "explanation": "Controlled movement and situational awareness reduce escape and assault risk."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "Contraband is best described as:",
+    "choices": [
+      "Any item an inmate owns",
+      "An item prohibited by law, rule, or facility policy, or an authorized item used improperly",
+      "Only illegal drugs",
+      "Only weapons"
+    ],
+    "answer": 1,
+    "explanation": "Contraband includes prohibited items and can include authorized items altered or possessed improperly."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "The safest general approach to searching a housing area is to:",
+    "choices": [
+      "Search randomly without a plan and leave doors open",
+      "Follow policy, maintain control, preserve evidence, and document significant findings",
+      "Allow inmates to handle discovered items",
+      "Announce every future search schedule"
+    ],
+    "answer": 1,
+    "explanation": "Systematic searches require control, safety, evidence handling, and documentation."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "A jailer discovers a suspected weapon during a search. The jailer should:",
+    "choices": [
+      "Return it to the inmate after warning them",
+      "Secure the item, preserve it appropriately, and follow reporting/evidence procedures",
+      "Leave it in place and tell another inmate",
+      "Take it home as a souvenir"
+    ],
+    "answer": 1,
+    "explanation": "Potential evidence/contraband should be secured and handled according to policy."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "Why should tool inventories be maintained in secure jail areas?",
+    "choices": [
+      "To reduce paperwork",
+      "To quickly identify missing tools that could become weapons or escape aids",
+      "To allow inmates to borrow tools freely",
+      "To replace staff searches"
+    ],
+    "answer": 1,
+    "explanation": "Missing tools can create immediate security risks."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "An inmate movement plan should emphasize:",
+    "choices": [
+      "Uncontrolled movement",
+      "Accountability, separation when required, and secure routes",
+      "Maximum crowding",
+      "Inmate-selected destinations"
+    ],
+    "answer": 1,
+    "explanation": "Controlled movement reduces assaults, escapes, and unauthorized contact."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "When a disturbance begins, the first jailer’s priorities should include:",
+    "choices": [
+      "Entering alone regardless of risk",
+      "Calling for appropriate assistance, maintaining safety, and following emergency procedures",
+      "Turning off all radios",
+      "Opening all cell doors"
+    ],
+    "answer": 1,
+    "explanation": "Emergency response should be coordinated, policy-based, and safety-focused."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "A good security round is:",
+    "choices": [
+      "Predictable to the minute so inmates can prepare",
+      "Thorough, alert, and conducted according to policy",
+      "Completed only from a desk camera",
+      "Skipped when the unit appears quiet"
+    ],
+    "answer": 1,
+    "explanation": "Active rounds help detect medical, security, and behavioral problems."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "Why is complacency dangerous in a jail?",
+    "choices": [
+      "It makes paperwork faster",
+      "It can cause staff to miss changes, manipulation, hazards, and developing threats",
+      "It improves inmate trust automatically",
+      "It eliminates the need for communication"
+    ],
+    "answer": 1,
+    "explanation": "Routine environments can still change quickly; alertness is essential."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "At intake, an inmate appears confused, is sweating heavily, and cannot answer basic questions. The best action is to:",
+    "choices": [
+      "Assume the person is uncooperative",
+      "Treat it as a possible medical issue and obtain appropriate medical evaluation",
+      "Immediately place the person in general population",
+      "Delay action until the next shift"
+    ],
+    "answer": 1,
+    "explanation": "Abnormal behavior may reflect a medical or substance-related emergency and requires evaluation."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "The purpose of an intake medical screening is primarily to:",
+    "choices": [
+      "Diagnose every disease",
+      "Identify urgent health risks and information needed for safe custody and referral",
+      "Determine guilt or innocence",
+      "Decide the inmate’s court sentence"
+    ],
+    "answer": 1,
+    "explanation": "Screening identifies risks and needed referral; it is not a substitute for a full diagnosis."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "During booking, property taken from an inmate should be:",
+    "choices": [
+      "Mixed with other inmates’ property",
+      "Inventoried, documented, secured, and handled according to policy",
+      "Left unsecured on a desk",
+      "Given to another inmate for safekeeping"
+    ],
+    "answer": 1,
+    "explanation": "Property accountability protects both the inmate and the facility."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "Identity verification during booking is important primarily to:",
+    "choices": [
+      "Make booking take longer",
+      "Ensure records, charges, property, and release decisions are tied to the correct person",
+      "Avoid taking photographs",
+      "Replace classification"
+    ],
+    "answer": 1,
+    "explanation": "Accurate identity is critical throughout custody."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "If an inmate reports suicidal thoughts during intake, staff should:",
+    "choices": [
+      "Keep it secret",
+      "Immediately initiate the facility’s suicide-risk response and notify appropriate personnel",
+      "Tell the inmate to discuss it after classification",
+      "Place the inmate alone without observation"
+    ],
+    "answer": 1,
+    "explanation": "Suicidal statements require immediate action under suicide-prevention procedures."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "A newly admitted inmate reports taking prescribed medication. Staff should:",
+    "choices": [
+      "Confiscate it and never document it",
+      "Document the information and follow health-care verification/continuity procedures",
+      "Allow the inmate to self-administer any amount",
+      "Tell the inmate medications are never available in jail"
+    ],
+    "answer": 1,
+    "explanation": "Medication information must be documented and handled through approved health-care processes."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "An intake search should be performed:",
+    "choices": [
+      "According to law and facility policy, with attention to safety and contraband",
+      "Only when the inmate volunteers",
+      "By another inmate",
+      "Without regard to privacy or policy"
+    ],
+    "answer": 0,
+    "explanation": "Searches must comply with law, policy, safety, and applicable privacy requirements."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "When booking documentation conflicts with the commitment/holding authority, the jailer should:",
+    "choices": [
+      "Guess which document is correct",
+      "Resolve the discrepancy through proper channels before relying on it",
+      "Alter the paperwork without authorization",
+      "Ignore it"
+    ],
+    "answer": 1,
+    "explanation": "Custody authority and records should be verified; discrepancies should not be guessed away."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "A jailer notices signs of possible intoxication during booking. The best response is to:",
+    "choices": [
+      "Assume the inmate can sleep it off without monitoring",
+      "Follow medical screening and observation/referral procedures",
+      "Place the inmate in a top bunk",
+      "Give the inmate another person’s medication"
+    ],
+    "answer": 1,
+    "explanation": "Intoxication can become life-threatening and requires appropriate screening and observation."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "Why should suicide and medical screening information be communicated during handoff?",
+    "choices": [
+      "To create gossip",
+      "To maintain continuity of safety and care",
+      "To let inmates compare symptoms",
+      "It should never be communicated"
+    ],
+    "answer": 1,
+    "explanation": "Critical risk information must reach staff who need it for safe custody."
+  },
+  {
+    "module": "Classification",
+    "text": "The main purpose of inmate classification is to:",
+    "choices": [
+      "Punish inmates before discipline",
+      "Assign custody/housing based on risk, needs, and relevant characteristics",
+      "Guarantee every inmate a private cell",
+      "Determine criminal guilt"
+    ],
+    "answer": 1,
+    "explanation": "Classification supports safe housing, supervision, and separation decisions."
+  },
+  {
+    "module": "Classification",
+    "text": "Which factor is relevant to classification?",
+    "choices": [
+      "Security risk and behavior history",
+      "Favorite sports team",
+      "Staff personal preference",
+      "Ability to give staff gifts"
+    ],
+    "answer": 0,
+    "explanation": "Classification should use objective safety, legal, behavioral, and needs-related factors."
+  },
+  {
+    "module": "Classification",
+    "text": "An inmate’s classification should be reconsidered when:",
+    "choices": [
+      "Significant new information or behavior changes risk/needs",
+      "The inmate asks for a better view",
+      "A staff member dislikes the inmate",
+      "Never after initial booking"
+    ],
+    "answer": 0,
+    "explanation": "Classification is dynamic and should respond to meaningful changes."
+  },
+  {
+    "module": "Classification",
+    "text": "Why are known enemies considered in housing decisions?",
+    "choices": [
+      "To increase conflict",
+      "To reduce the risk of assault and maintain safety",
+      "To simplify meal service",
+      "They are never relevant"
+    ],
+    "answer": 1,
+    "explanation": "Separation of known enemies can prevent violence."
+  },
+  {
+    "module": "Classification",
+    "text": "Housing decisions should be based primarily on:",
+    "choices": [
+      "Objective classification information and policy",
+      "Inmate popularity",
+      "Random choice",
+      "Personal favors"
+    ],
+    "answer": 0,
+    "explanation": "Objective classification reduces arbitrary and unsafe placements."
+  },
+  {
+    "module": "Classification",
+    "text": "A jailer receives credible information that two housed inmates have a serious conflict. The jailer should:",
+    "choices": [
+      "Ignore it until a fight occurs",
+      "Communicate the information and take action under classification/security procedures",
+      "Tell both inmates to settle it privately",
+      "Post the information publicly"
+    ],
+    "answer": 1,
+    "explanation": "Credible safety information should be acted on before violence develops."
+  },
+  {
+    "module": "Classification",
+    "text": "An inmate with significant medical limitations may require classification staff to:",
+    "choices": [
+      "Ignore the limitations",
+      "Consider housing and supervision needs in coordination with health-care information",
+      "Automatically release the inmate",
+      "Place the inmate in disciplinary segregation"
+    ],
+    "answer": 1,
+    "explanation": "Classification should account for legitimate medical and functional needs."
+  },
+  {
+    "module": "Classification",
+    "text": "Why is objective classification preferable to purely subjective judgment?",
+    "choices": [
+      "It supports consistency, defensibility, and safety",
+      "It eliminates all staff responsibility",
+      "It lets inmates choose housing",
+      "It prevents documentation"
+    ],
+    "answer": 0,
+    "explanation": "Objective criteria promote consistent and defensible decisions."
+  },
+  {
+    "module": "Inmate Services",
+    "text": "Access to basic sanitation primarily supports:",
+    "choices": [
+      "Health, safety, and humane conditions of confinement",
+      "Punishment",
+      "Entertainment only",
+      "Classification scoring"
+    ],
+    "answer": 0,
+    "explanation": "Sanitation is a fundamental health and humane-custody concern."
+  },
+  {
+    "module": "Inmate Services",
+    "text": "Religious practices in jail are generally handled by:",
+    "choices": [
+      "Automatically banning all practices",
+      "Providing reasonable opportunities consistent with legitimate security and operational needs",
+      "Allowing any item regardless of risk",
+      "Letting other inmates decide"
+    ],
+    "answer": 1,
+    "explanation": "Facilities balance legitimate religious exercise with safety and security needs."
+  },
+  {
+    "module": "Inmate Services",
+    "text": "Why should meal and special-diet procedures be followed carefully?",
+    "choices": [
+      "They can involve health, religious, and safety requirements",
+      "They are optional",
+      "They only affect commissary sales",
+      "They replace medical screening"
+    ],
+    "answer": 0,
+    "explanation": "Dietary needs can have medical, religious, and operational significance."
+  },
+  {
+    "module": "Inmate Services",
+    "text": "Mail procedures in a jail should:",
+    "choices": [
+      "Follow applicable law and facility policy while addressing security concerns",
+      "Allow all items without inspection",
+      "Be based on staff preference only",
+      "Never be documented"
+    ],
+    "answer": 0,
+    "explanation": "Mail access is regulated and must be balanced with facility security."
+  },
+  {
+    "module": "Inmate Services",
+    "text": "An inmate requests an approved grievance form. A jailer should:",
+    "choices": [
+      "Deny it because complaints are disrespectful",
+      "Provide access consistent with the facility grievance procedure",
+      "Threaten discipline",
+      "Destroy the request"
+    ],
+    "answer": 1,
+    "explanation": "Authorized grievance access should not be obstructed or retaliated against."
+  },
+  {
+    "module": "Inmate Services",
+    "text": "Which statement about inmate privileges is best?",
+    "choices": [
+      "Every privilege is an absolute constitutional right",
+      "Privileges may be regulated by lawful facility rules and security needs",
+      "Staff may grant privileges only to favorites",
+      "Privileges never require consistent rules"
+    ],
+    "answer": 1,
+    "explanation": "Privileges are subject to lawful facility policy and safety considerations."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "An inmate complains of crushing chest pain and difficulty breathing. The jailer should:",
+    "choices": [
+      "Wait until sick call tomorrow",
+      "Treat it as a possible emergency and activate medical/emergency response",
+      "Give food and send the inmate to sleep",
+      "Ask another inmate to diagnose the problem"
+    ],
+    "answer": 1,
+    "explanation": "Chest pain with breathing difficulty can be life-threatening and needs immediate evaluation."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "An inmate suddenly becomes unresponsive. The first-response priority is to:",
+    "choices": [
+      "Finish paperwork first",
+      "Activate emergency response and assess immediate life threats according to training",
+      "Move everyone away and do nothing",
+      "Assume the inmate is pretending"
+    ],
+    "answer": 1,
+    "explanation": "Unresponsiveness requires immediate emergency assessment and response."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "Which sign may indicate a stroke and requires urgent medical response?",
+    "choices": [
+      "Sudden facial droop or one-sided weakness",
+      "Gradual nail growth",
+      "Normal hunger before lunch",
+      "Sleeping at bedtime"
+    ],
+    "answer": 0,
+    "explanation": "Sudden neurological deficits such as facial droop or unilateral weakness are emergency warning signs."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "During an active seizure, the safest general action is to:",
+    "choices": [
+      "Force an object into the person’s mouth",
+      "Protect the person from injury, summon medical help, and follow trained seizure procedures",
+      "Hold the person down with maximum force",
+      "Give water immediately"
+    ],
+    "answer": 1,
+    "explanation": "Do not place objects in the mouth; protect from injury and obtain medical assistance."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "A diabetic inmate becomes confused, shaky, and sweaty. Staff should:",
+    "choices": [
+      "Assume misconduct",
+      "Treat it as a possible medical emergency and follow emergency/medical procedures",
+      "Place the inmate in discipline first",
+      "Ignore the symptoms"
+    ],
+    "answer": 1,
+    "explanation": "These can be signs of dangerous blood-sugar abnormality requiring prompt evaluation."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "Severe bleeding should be treated as:",
+    "choices": [
+      "A routine issue for the next shift",
+      "A potential emergency requiring trained first aid and medical response",
+      "A classification problem only",
+      "An excuse to delay help"
+    ],
+    "answer": 1,
+    "explanation": "Major bleeding can quickly become life-threatening."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "Universal/standard precautions are used because:",
+    "choices": [
+      "Only known sick persons can transmit infection",
+      "Blood and certain body fluids should be treated as potentially infectious",
+      "Gloves eliminate every risk",
+      "They are only for hospitals"
+    ],
+    "answer": 1,
+    "explanation": "Standard precautions reduce exposure to bloodborne and other infectious hazards."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "After a significant blood or body-fluid exposure, staff should:",
+    "choices": [
+      "Hide the exposure",
+      "Follow immediate exposure-control, reporting, and medical evaluation procedures",
+      "Wait for symptoms before reporting",
+      "Ask the inmate whether the exposure matters"
+    ],
+    "answer": 1,
+    "explanation": "Prompt reporting and medical evaluation are important after occupational exposure."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "An inmate says, “I cannot breathe,” but appears anxious. The jailer should:",
+    "choices": [
+      "Assume it is only anxiety",
+      "Assess and obtain appropriate medical help because breathing complaints can be serious",
+      "Tell the inmate to stop complaining",
+      "Place a bag over the inmate’s head"
+    ],
+    "answer": 1,
+    "explanation": "Breathing difficulty should be taken seriously and medically assessed."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "Why is continuity of prescribed medication important?",
+    "choices": [
+      "Abrupt interruption can create health risks",
+      "Medication never matters in custody",
+      "It is only a commissary issue",
+      "Jailers should independently prescribe replacements"
+    ],
+    "answer": 0,
+    "explanation": "Medication continuity can be clinically important and should be managed through approved health-care processes."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "A jailer should independently diagnose an inmate’s illness only when:",
+    "choices": [
+      "The jailer has seen similar symptoms before",
+      "Never; the jailer should recognize warning signs and refer/activate medical care within training and policy",
+      "The inmate asks nicely",
+      "The medical unit is busy"
+    ],
+    "answer": 1,
+    "explanation": "Jailers identify risks and obtain care; diagnosis belongs to qualified health-care professionals."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "An inmate reports a severe allergic reaction with swelling of the lips and difficulty breathing. This is:",
+    "choices": [
+      "Potentially life-threatening and needs immediate emergency response",
+      "A routine commissary complaint",
+      "A disciplinary issue",
+      "Something to reassess next week"
+    ],
+    "answer": 0,
+    "explanation": "Airway swelling and breathing difficulty can indicate anaphylaxis and require immediate emergency care."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "What is the safest response to an inmate who may have swallowed an unknown drug packet?",
+    "choices": [
+      "Wait for symptoms",
+      "Treat it as a potentially serious medical situation and notify medical/emergency personnel",
+      "Induce vomiting without medical direction",
+      "Give the inmate coffee"
+    ],
+    "answer": 1,
+    "explanation": "Unknown ingestions can deteriorate rapidly and need prompt medical evaluation."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "An inmate with a head injury becomes increasingly drowsy and vomits. Staff should:",
+    "choices": [
+      "Let the inmate sleep without evaluation",
+      "Seek urgent medical evaluation",
+      "Give a disciplinary warning",
+      "Move the inmate to recreation"
+    ],
+    "answer": 1,
+    "explanation": "Worsening drowsiness and vomiting after head injury are concerning warning signs."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "Why should medical complaints be documented accurately?",
+    "choices": [
+      "To support continuity of care, accountability, and communication",
+      "To prove all complaints are false",
+      "To replace medical assessment",
+      "Only to increase paperwork"
+    ],
+    "answer": 0,
+    "explanation": "Accurate records support safe follow-up and accountability."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "An inmate says, “Everyone would be better off without me.” The jailer should:",
+    "choices": [
+      "Dismiss it as attention seeking",
+      "Take the statement seriously and initiate suicide-risk procedures",
+      "Challenge the inmate to prove it",
+      "Wait several days before telling anyone"
+    ],
+    "answer": 1,
+    "explanation": "Indirect statements about death or hopelessness can be suicide warning signs."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "A major principle of suicide prevention in jail is to:",
+    "choices": [
+      "Rely only on the inmate to request help",
+      "Recognize warning signs, communicate risk, and use required observation/protection procedures",
+      "Keep suicide concerns confidential from all staff",
+      "Use punishment for suicidal statements"
+    ],
+    "answer": 1,
+    "explanation": "Prevention depends on recognition, communication, appropriate observation, and intervention."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "Which change may increase concern for suicide risk?",
+    "choices": [
+      "Sudden hopelessness, giving away possessions, or talking about death",
+      "Requesting a meal tray",
+      "Reading a book",
+      "Asking the time"
+    ],
+    "answer": 0,
+    "explanation": "Behavioral changes and death-focused statements can signal increased suicide risk."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "A suicidal inmate suddenly becomes unusually calm after severe distress. Staff should:",
+    "choices": [
+      "Assume the risk is gone",
+      "Continue to take the risk seriously and follow suicide-prevention procedures",
+      "Immediately remove all observation",
+      "Reward the inmate with privacy"
+    ],
+    "answer": 1,
+    "explanation": "A sudden mood shift does not guarantee that suicide risk has resolved."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "When speaking with a person in emotional crisis, a helpful de-escalation technique is to:",
+    "choices": [
+      "Use a calm tone, allow time, listen, and give clear simple directions",
+      "Shout faster than the person",
+      "Crowd the person unnecessarily",
+      "Mock irrational statements"
+    ],
+    "answer": 0,
+    "explanation": "Calm communication and clear directions can reduce escalation."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "A person experiencing hallucinations is frightened. The jailer should generally:",
+    "choices": [
+      "Argue aggressively that the hallucination is impossible",
+      "Acknowledge the person’s distress without reinforcing the hallucination and seek appropriate help",
+      "Pretend to see the same thing",
+      "Use ridicule"
+    ],
+    "answer": 1,
+    "explanation": "Acknowledge the emotion, maintain safety, and avoid validating a false perception as fact."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "De-escalation is most effective when staff:",
+    "choices": [
+      "Maintain self-control and reduce unnecessary stimulation",
+      "Compete with the inmate for dominance verbally",
+      "Issue multiple conflicting commands",
+      "Use insults"
+    ],
+    "answer": 0,
+    "explanation": "Staff self-control and clear communication are central to de-escalation."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "If an inmate is actively attempting suicide, staff should:",
+    "choices": [
+      "Delay intervention until a supervisor arrives regardless of circumstances",
+      "Initiate the emergency/suicide response immediately, consistent with training and safety",
+      "Turn off observation cameras",
+      "Leave the inmate alone for privacy"
+    ],
+    "answer": 1,
+    "explanation": "An active attempt is an emergency requiring immediate response."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "After a suicide attempt is interrupted, the inmate should:",
+    "choices": [
+      "Be considered safe because the attempt failed",
+      "Receive immediate medical/mental-health evaluation and continued protective measures",
+      "Be returned to routine housing without communication",
+      "Be disciplined for causing work"
+    ],
+    "answer": 1,
+    "explanation": "Risk remains high after an attempt; evaluation and protection are essential."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "Which statement about asking directly about suicide is best?",
+    "choices": [
+      "Asking about suicide causes suicide",
+      "Direct, calm questions can help identify risk and should be followed by appropriate action",
+      "Only family members may ask",
+      "Never document the answer"
+    ],
+    "answer": 1,
+    "explanation": "Direct inquiry is a recognized way to identify suicide risk; concerns should be acted upon."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "A veteran inmate becomes highly reactive to loud noises and says they remind him of combat. The best initial approach is to:",
+    "choices": [
+      "Mock the reaction",
+      "Use calm, respectful communication, reduce avoidable triggers when safe, and assess needs",
+      "Immediately use force",
+      "Tell other inmates about the veteran’s history"
+    ],
+    "answer": 1,
+    "explanation": "Trauma-informed interaction emphasizes safety, respect, and avoiding unnecessary escalation."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "When interacting with a veteran in crisis, staff should remember that:",
+    "choices": [
+      "Every veteran has PTSD",
+      "Military service alone does not diagnose a condition; observe behavior and respond to individual needs",
+      "Veterans should always be housed separately",
+      "Veterans cannot experience substance-use problems"
+    ],
+    "answer": 1,
+    "explanation": "Avoid stereotypes; assess the individual and use appropriate resources."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "A jailer learns an inmate has a mental-health history. The jailer should:",
+    "choices": [
+      "Use the diagnosis as an insult",
+      "Use the information only for legitimate safety/care purposes and follow policy",
+      "Tell the housing unit",
+      "Assume the person is violent"
+    ],
+    "answer": 1,
+    "explanation": "Mental-health information should support individualized safety and care, not stigma."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "Which is the best example of active listening?",
+    "choices": [
+      "Interrupting to correct every detail",
+      "Listening, reflecting key points, and asking clear relevant questions",
+      "Looking away and using a phone",
+      "Giving rapid commands before hearing the problem"
+    ],
+    "answer": 1,
+    "explanation": "Active listening improves communication and can reduce escalation."
+  },
+  {
+    "module": "Communication",
+    "text": "An inmate repeatedly tries to split staff by saying, “Officer Smith lets me do it.” The best response is to:",
+    "choices": [
+      "Compete with Officer Smith",
+      "Follow policy, verify information, and communicate with staff",
+      "Grant the request to avoid conflict",
+      "Tell the inmate private information about Officer Smith"
+    ],
+    "answer": 1,
+    "explanation": "Consistency and staff communication reduce manipulation opportunities."
+  },
+  {
+    "module": "Communication",
+    "text": "A common defense against inmate manipulation is:",
+    "choices": [
+      "Keeping professional boundaries and following consistent rules",
+      "Sharing personal problems with inmates",
+      "Making secret deals",
+      "Accepting favors"
+    ],
+    "answer": 0,
+    "explanation": "Clear boundaries and consistency protect staff and facility integrity."
+  },
+  {
+    "module": "Communication",
+    "text": "Which response is most likely to de-escalate a verbal conflict?",
+    "choices": [
+      "“Shut up or else.”",
+      "“I hear what you’re saying. Step back and we’ll talk through the issue.”",
+      "“You’re crazy.”",
+      "“Everyone here hates you.”"
+    ],
+    "answer": 1,
+    "explanation": "Respectful acknowledgment plus a clear behavioral direction supports de-escalation."
+  },
+  {
+    "module": "Communication",
+    "text": "Why should jailers avoid sharing unnecessary personal information with inmates?",
+    "choices": [
+      "It can create manipulation, boundary, and safety risks",
+      "It is always a criminal offense",
+      "It prevents all communication",
+      "Inmates already know everything"
+    ],
+    "answer": 0,
+    "explanation": "Unnecessary personal details can be exploited and blur professional boundaries."
+  },
+  {
+    "module": "Communication",
+    "text": "An inmate asks a jailer to carry a message to another inmate outside approved channels. The jailer should:",
+    "choices": [
+      "Do it as a favor",
+      "Decline and follow authorized communication procedures",
+      "Charge a fee",
+      "Carry only verbal messages"
+    ],
+    "answer": 1,
+    "explanation": "Staff should not become conduits for unauthorized inmate communications."
+  },
+  {
+    "module": "Communication",
+    "text": "Clear commands during a tense situation should generally be:",
+    "choices": [
+      "Simple, direct, and understandable",
+      "Long and technical",
+      "Contradictory",
+      "Whispered from far away"
+    ],
+    "answer": 0,
+    "explanation": "Clear, concise directions are easier to understand under stress."
+  },
+  {
+    "module": "PREA / Sexual Safety",
+    "text": "An inmate reports sexual abuse. The jailer’s first responsibility is to:",
+    "choices": [
+      "Dismiss the report if there is no visible injury",
+      "Protect the person from immediate harm and follow reporting/response procedures",
+      "Investigate alone without notifying anyone",
+      "Tell other inmates"
+    ],
+    "answer": 1,
+    "explanation": "Reports require immediate safety action and required reporting/response."
+  },
+  {
+    "module": "PREA / Sexual Safety",
+    "text": "Staff retaliation against an inmate who reports sexual abuse is:",
+    "choices": [
+      "Acceptable if the allegation is unproven",
+      "Improper and prohibited",
+      "A classification reward",
+      "Required by PREA"
+    ],
+    "answer": 1,
+    "explanation": "Retaliation undermines reporting and is prohibited."
+  },
+  {
+    "module": "PREA / Sexual Safety",
+    "text": "If an alleged sexual assault may have occurred recently, staff should:",
+    "choices": [
+      "Destroy potential evidence to protect privacy",
+      "Protect the victim, preserve evidence as appropriate, and follow medical/investigative notification procedures",
+      "Require the victim to confront the accused",
+      "Delay all action"
+    ],
+    "answer": 1,
+    "explanation": "Safety, evidence preservation, medical care, and reporting are key first-response priorities."
+  },
+  {
+    "module": "PREA / Sexual Safety",
+    "text": "Sexual contact between staff and an inmate is:",
+    "choices": [
+      "Acceptable if the inmate agrees",
+      "Prohibited; an inmate cannot consent to sexual activity with staff in the custodial relationship",
+      "Allowed during off-duty hours",
+      "A private matter"
+    ],
+    "answer": 1,
+    "explanation": "Custodial staff-inmate sexual activity is prohibited; apparent consent does not make it permissible."
+  },
+  {
+    "module": "PREA / Sexual Safety",
+    "text": "A professional response to an inmate reporting sexual abuse is to:",
+    "choices": [
+      "Remain respectful, avoid blaming, protect safety, and follow reporting policy",
+      "Promise absolute secrecy",
+      "Ask mocking questions",
+      "Tell the inmate to handle it personally"
+    ],
+    "answer": 0,
+    "explanation": "A trauma-informed, policy-based response supports safety and reporting."
+  },
+  {
+    "module": "Use of Force",
+    "text": "The amount of force used in a jail should generally be:",
+    "choices": [
+      "Punitive whenever an inmate is disrespectful",
+      "Objectively reasonable and consistent with law, policy, and the circumstances",
+      "The maximum force available",
+      "Based on the jailer’s anger"
+    ],
+    "answer": 1,
+    "explanation": "Force must be justified by the circumstances and not used as punishment."
+  },
+  {
+    "module": "Use of Force",
+    "text": "Force should never be used solely to:",
+    "choices": [
+      "Protect a person from immediate harm",
+      "Stop an assault",
+      "Punish an inmate for disrespect",
+      "Prevent an escape when legally justified"
+    ],
+    "answer": 2,
+    "explanation": "Force is not a tool for punishment or retaliation."
+  },
+  {
+    "module": "Use of Force",
+    "text": "After a significant use-of-force event, staff should:",
+    "choices": [
+      "Avoid documentation",
+      "Ensure medical needs are addressed and complete required reporting",
+      "Coordinate stories before reporting",
+      "Delete video"
+    ],
+    "answer": 1,
+    "explanation": "Medical evaluation and accurate reporting are important after force."
+  },
+  {
+    "module": "Use of Force",
+    "text": "Before using force, when circumstances safely allow, staff should consider:",
+    "choices": [
+      "Communication and de-escalation options",
+      "Personal revenge",
+      "Turning off recording systems",
+      "Calling inmates to assist"
+    ],
+    "answer": 0,
+    "explanation": "When feasible, communication and de-escalation may resolve resistance without force."
+  },
+  {
+    "module": "Use of Force",
+    "text": "A jailer’s report after use of force should be:",
+    "choices": [
+      "Objective, complete, and based on observed facts",
+      "Written to make the jailer look good regardless of facts",
+      "Copied from another officer",
+      "Intentionally vague"
+    ],
+    "answer": 0,
+    "explanation": "Use-of-force reports should accurately describe observations, actions, and relevant circumstances."
+  },
+  {
+    "module": "Use of Force",
+    "text": "Once resistance or the threat requiring force ends, staff should:",
+    "choices": [
+      "Continue force as punishment",
+      "Reassess and stop or reduce force as appropriate",
+      "Invite others to participate",
+      "Ignore the inmate’s condition"
+    ],
+    "answer": 1,
+    "explanation": "Force must remain tied to the legitimate need that justified it."
+  },
+  {
+    "module": "Documentation Procedures",
+    "text": "Good incident documentation should distinguish:",
+    "choices": [
+      "Observed facts from assumptions or conclusions",
+      "Facts from nothing",
+      "Only rumors from gossip",
+      "Staff names from dates"
+    ],
+    "answer": 0,
+    "explanation": "Reports should clearly describe what was observed, heard, and done without unsupported assumptions."
+  },
+  {
+    "module": "Documentation Procedures",
+    "text": "Which report statement is most objective?",
+    "choices": [
+      "“The inmate was obviously evil.”",
+      "“I observed the inmate strike the door three times with a closed fist.”",
+      "“The inmate always causes trouble.”",
+      "“Everybody knows he is violent.”"
+    ],
+    "answer": 1,
+    "explanation": "Objective reports describe specific observable behavior."
+  },
+  {
+    "module": "Documentation Procedures",
+    "text": "A correction to an official record should be made:",
+    "choices": [
+      "By secretly deleting the original information",
+      "According to authorized record-correction procedures while preserving integrity",
+      "By asking an inmate to change it",
+      "Only verbally"
+    ],
+    "answer": 1,
+    "explanation": "Official records must maintain integrity and an appropriate audit trail."
+  },
+  {
+    "module": "Documentation Procedures",
+    "text": "Before releasing an inmate, staff should:",
+    "choices": [
+      "Rely on the inmate’s statement that release is due",
+      "Verify legal release authority and identity according to procedure",
+      "Release anyone whose family arrives",
+      "Skip warrant/status checks required by procedure"
+    ],
+    "answer": 1,
+    "explanation": "Release requires verified authority and correct identity."
+  },
+  {
+    "module": "Documentation Procedures",
+    "text": "Why is release verification critical?",
+    "choices": [
+      "Wrongful release or over-detention can create serious safety and legal consequences",
+      "It only affects property inventory",
+      "It is optional after midnight",
+      "It is only a transportation issue"
+    ],
+    "answer": 0,
+    "explanation": "Accurate release processing protects liberty, safety, and legal compliance."
+  },
+  {
+    "module": "Documentation Procedures",
+    "text": "At release, inmate property should generally be:",
+    "choices": [
+      "Returned according to documented inventory and policy",
+      "Given to another inmate",
+      "Discarded without record",
+      "Kept by staff"
+    ],
+    "answer": 0,
+    "explanation": "Property disposition should match documented inventory and authorized procedures."
+  },
+  {
+    "module": "Documentation Procedures",
+    "text": "A shift handoff should communicate:",
+    "choices": [
+      "Only routine meal counts",
+      "Significant security, medical, mental-health, classification, and operational information needed by the next shift",
+      "Personal opinions about inmates",
+      "Confidential information unrelated to duties"
+    ],
+    "answer": 1,
+    "explanation": "Effective handoffs prevent critical information from being lost."
+  },
+  {
+    "module": "Documentation Procedures",
+    "text": "If a jailer did not personally witness an event but reports what another person said, the report should:",
+    "choices": [
+      "Present it as personal observation",
+      "Attribute the information to the source",
+      "Omit the source",
+      "Change the wording to sound certain"
+    ],
+    "answer": 1,
+    "explanation": "Reports should distinguish direct observation from information received from others."
+  },
+  {
+    "module": "Emergency Procedures",
+    "text": "During a fire emergency, jail staff should:",
+    "choices": [
+      "Open every secure door at once",
+      "Follow the facility emergency plan, maintain accountability, and coordinate evacuation/movement as directed",
+      "Ignore smoke if there is no flame",
+      "Turn off all communications"
+    ],
+    "answer": 1,
+    "explanation": "Jail emergencies require controlled response, accountability, and adherence to the emergency plan."
+  },
+  {
+    "module": "Emergency Procedures",
+    "text": "Why is inmate accountability especially important during an evacuation?",
+    "choices": [
+      "To verify everyone is accounted for and prevent escape or missing persons",
+      "Only to count meal trays",
+      "To choose recreation teams",
+      "It is not important"
+    ],
+    "answer": 0,
+    "explanation": "Emergency movement increases risk; accountability remains essential."
+  },
+  {
+    "module": "Emergency Procedures",
+    "text": "An emergency response plan should be familiar to staff:",
+    "choices": [
+      "Before an emergency occurs",
+      "Only after a major incident",
+      "Only to supervisors",
+      "Only to maintenance workers"
+    ],
+    "answer": 0,
+    "explanation": "Preparation and familiarity improve response under stress."
+  },
+  {
+    "module": "Emergency Procedures",
+    "text": "If a jailer smells smoke but sees no fire, the jailer should:",
+    "choices": [
+      "Ignore it",
+      "Treat it as a potential emergency and follow fire/safety notification procedures",
+      "Wait until flames appear",
+      "Ask inmates to investigate"
+    ],
+    "answer": 1,
+    "explanation": "Smoke can indicate a developing fire and should prompt immediate procedural response."
+  },
+  {
+    "module": "Emergency Procedures",
+    "text": "During a medical emergency in a secure unit, staff must balance:",
+    "choices": [
+      "Patient care and scene/security safety",
+      "Only paperwork and meal service",
+      "Inmate preference and staff convenience",
+      "Nothing; security never matters"
+    ],
+    "answer": 0,
+    "explanation": "Emergency care and secure-scene management must occur together."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "A jailer notices an inmate repeatedly watching staff key and door procedures. The best response is to:",
+    "choices": [
+      "Ignore it",
+      "Increase awareness, protect security-sensitive practices, and communicate the concern appropriately",
+      "Explain the key system to the inmate",
+      "Give the inmate a spare key"
+    ],
+    "answer": 1,
+    "explanation": "Observation of security procedures can signal planning or manipulation and should be handled professionally."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "Why should staff avoid establishing predictable shortcuts in security procedures?",
+    "choices": [
+      "Predictable weaknesses can be exploited",
+      "Shortcuts are always faster",
+      "Inmates cannot observe routines",
+      "Policy never matters"
+    ],
+    "answer": 0,
+    "explanation": "Predictable vulnerabilities can be studied and exploited."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "A door that should be locked is found propped open. The jailer should:",
+    "choices": [
+      "Leave it that way for convenience",
+      "Correct the security breach and report/document as required",
+      "Ask an inmate to guard it",
+      "Wait for the next count"
+    ],
+    "answer": 1,
+    "explanation": "Unsecured doors can enable unauthorized movement or escape."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "When transporting inmates within a secure facility, staff should know:",
+    "choices": [
+      "The route, destination, identities, and required separation/security information",
+      "Only the destination",
+      "Only the inmate’s nickname",
+      "Nothing in advance"
+    ],
+    "answer": 0,
+    "explanation": "Controlled movement requires planning and accountability."
+  },
+  {
+    "module": "Classification",
+    "text": "Which approach best reduces improper housing decisions?",
+    "choices": [
+      "Use verified information and objective criteria",
+      "Use rumors only",
+      "House everyone together",
+      "Let inmates trade cells freely"
+    ],
+    "answer": 0,
+    "explanation": "Verified information and objective criteria support safer placement."
+  },
+  {
+    "module": "Classification",
+    "text": "Protective custody considerations are primarily related to:",
+    "choices": [
+      "Safety threats and vulnerability",
+      "Meal preferences only",
+      "Staff convenience",
+      "Punishment for filing grievances"
+    ],
+    "answer": 0,
+    "explanation": "Protective housing decisions address legitimate safety risks."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "A booking officer finds a serious discrepancy in the inmate’s identity information. The officer should:",
+    "choices": [
+      "Ignore it",
+      "Pause and verify the information through appropriate procedures",
+      "Create a new identity",
+      "Let the inmate choose which record to use"
+    ],
+    "answer": 1,
+    "explanation": "Identity discrepancies can affect custody, charges, medical records, and release."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "Why are scars, marks, tattoos, and photographs commonly documented during booking?",
+    "choices": [
+      "They can assist identification and record accuracy",
+      "They determine guilt",
+      "They replace fingerprints in every case",
+      "They are used for entertainment"
+    ],
+    "answer": 0,
+    "explanation": "Physical identifiers support accurate identification."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "An inmate who was heavily intoxicated at intake is now difficult to wake. The best action is to:",
+    "choices": [
+      "Let the inmate sleep longer",
+      "Treat the change as a medical emergency and obtain immediate evaluation",
+      "Give a cold shower",
+      "Move the inmate without assessment"
+    ],
+    "answer": 1,
+    "explanation": "Decreased responsiveness after intoxication can indicate a life-threatening condition."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "A person with suspected opioid overdose is barely breathing. Staff should:",
+    "choices": [
+      "Wait for a supervisor before doing anything",
+      "Activate emergency medical response and provide trained lifesaving care, including naloxone if authorized/trained",
+      "Give food",
+      "Make the person walk"
+    ],
+    "answer": 1,
+    "explanation": "Opioid overdose with respiratory depression is an emergency; follow trained response and naloxone protocol if applicable."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "Which symptom after heat exposure is especially concerning?",
+    "choices": [
+      "Confusion or altered mental status",
+      "Mild thirst only",
+      "Normal sweating after exercise",
+      "Wanting water"
+    ],
+    "answer": 0,
+    "explanation": "Altered mental status can indicate severe heat illness and requires urgent care."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "An inmate with asthma has severe wheezing and trouble speaking full sentences. Staff should:",
+    "choices": [
+      "Wait for routine sick call",
+      "Activate medical response promptly",
+      "Tell the inmate to exercise",
+      "Place the inmate in a closed room alone"
+    ],
+    "answer": 1,
+    "explanation": "Severe breathing difficulty is an urgent medical problem."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "When an inmate says a medication causes a serious side effect, the jailer should:",
+    "choices": [
+      "Change the prescription independently",
+      "Document and refer the concern through health-care procedures",
+      "Tell the inmate to stop all medications permanently",
+      "Give another inmate’s medication"
+    ],
+    "answer": 1,
+    "explanation": "Medication decisions should be handled by qualified health-care personnel."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "Which is a reason to use gloves when contact with blood is anticipated?",
+    "choices": [
+      "To reduce occupational exposure risk",
+      "To make documentation easier",
+      "To avoid speaking with the inmate",
+      "To replace hand hygiene entirely"
+    ],
+    "answer": 0,
+    "explanation": "Gloves are part of standard precautions but do not replace hand hygiene and other controls."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "After providing emergency care, a jailer should also:",
+    "choices": [
+      "Complete required notifications/documentation and preserve relevant information",
+      "Keep the incident secret",
+      "Discard all records",
+      "Alter the timeline"
+    ],
+    "answer": 0,
+    "explanation": "Follow-up reporting and documentation support continuity, investigation, and accountability."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "If an inmate complains of sudden severe abdominal pain with fainting, staff should:",
+    "choices": [
+      "Assume malingering",
+      "Seek urgent medical evaluation",
+      "Wait several days",
+      "Give an unapproved medication"
+    ],
+    "answer": 1,
+    "explanation": "Sudden severe pain with fainting can indicate a serious emergency."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "A person choking and unable to speak or breathe requires:",
+    "choices": [
+      "Immediate trained choking response and emergency activation",
+      "A routine sick-call form",
+      "Water first",
+      "No action until unconscious"
+    ],
+    "answer": 0,
+    "explanation": "Complete airway obstruction is life-threatening and requires immediate trained intervention."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "An inmate says they may be pregnant and has heavy bleeding with severe pain. The jailer should:",
+    "choices": [
+      "Treat it as urgent and obtain medical evaluation",
+      "Wait until the next scheduled appointment",
+      "Require exercise",
+      "Ignore the pregnancy statement"
+    ],
+    "answer": 0,
+    "explanation": "Heavy bleeding and severe pain can be a medical emergency."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "Which environment is generally safest for interviewing a highly agitated inmate?",
+    "choices": [
+      "One with unnecessary noise and a crowd",
+      "A controlled setting with adequate staff safety and reduced avoidable stimulation",
+      "A location filled with potential weapons",
+      "A place where exits are blocked for staff"
+    ],
+    "answer": 1,
+    "explanation": "Reduce unnecessary stimulation while maintaining officer safety and appropriate positioning."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "A jailer hears another staff member call a mentally ill inmate “crazy” and ridicule symptoms. The professional response is to:",
+    "choices": [
+      "Join in",
+      "Maintain respectful conduct and address/report unprofessional behavior as appropriate",
+      "Tell inmates about it",
+      "Ignore all conduct standards"
+    ],
+    "answer": 1,
+    "explanation": "Stigma and ridicule undermine professionalism and can worsen crises."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "A suicide watch or observation level should be reduced:",
+    "choices": [
+      "Whenever an inmate promises to be safe",
+      "Only through the authorized clinical/facility process",
+      "When housing is crowded",
+      "At the end of every shift automatically"
+    ],
+    "answer": 1,
+    "explanation": "Changes to suicide precautions should follow authorized assessment and facility procedures."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "Which statement is best when a veteran describes a traumatic experience?",
+    "choices": [
+      "“You should be over it.”",
+      "“I’m listening. What do you need right now to stay safe?”",
+      "“All veterans act like this.”",
+      "“Tell everyone in the unit.”"
+    ],
+    "answer": 1,
+    "explanation": "Respectful, present-focused communication supports safety without stereotyping."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "When an inmate is escalating, one useful tactic is to:",
+    "choices": [
+      "Give one staff member the lead in communication when feasible",
+      "Have several officers shout different commands",
+      "Stand unnecessarily close",
+      "Argue about unrelated issues"
+    ],
+    "answer": 0,
+    "explanation": "A clear communication lead can reduce confusion and escalation."
+  },
+  {
+    "module": "Documentation Procedures",
+    "text": "A report should be completed as soon as practical because:",
+    "choices": [
+      "Memory can fade and timely records support operations and review",
+      "Reports become more accurate after several weeks",
+      "Dates do not matter",
+      "Other staff can guess the details"
+    ],
+    "answer": 0,
+    "explanation": "Timely reporting helps preserve accurate detail."
+  },
+  {
+    "module": "Professionalism",
+    "text": "Favoritism toward certain inmates can:",
+    "choices": [
+      "Undermine security, consistency, and staff credibility",
+      "Improve classification accuracy",
+      "Replace policy",
+      "Prevent manipulation"
+    ],
+    "answer": 0,
+    "explanation": "Favoritism creates boundary and security problems."
+  },
+  {
+    "module": "Professionalism",
+    "text": "If an inmate threatens to expose embarrassing personal information about a jailer unless given a favor, the jailer should:",
+    "choices": [
+      "Give the favor",
+      "Maintain boundaries, preserve evidence/information, and report the manipulation attempt",
+      "Make a secret deal",
+      "Threaten the inmate’s family"
+    ],
+    "answer": 1,
+    "explanation": "Blackmail/manipulation attempts should be reported, not accommodated."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "Which is the best reason to inspect restraints before and after use?",
+    "choices": [
+      "To ensure function, accountability, and safety",
+      "To make them look new",
+      "To avoid documentation",
+      "To let inmates choose equipment"
+    ],
+    "answer": 0,
+    "explanation": "Equipment checks help ensure serviceability and accountability."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "A security camera is useful but:",
+    "choices": [
+      "It completely replaces staff rounds",
+      "It does not replace required direct supervision, rounds, and response",
+      "It removes the need for documentation",
+      "It permits staff to ignore blind spots"
+    ],
+    "answer": 1,
+    "explanation": "Technology supplements rather than replaces required supervision."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "An inmate blocks the view into a cell in violation of safety rules. Staff should:",
+    "choices": [
+      "Ignore it",
+      "Address the obstruction according to policy because visibility may be essential to safety",
+      "Turn off lights",
+      "Block the camera too"
+    ],
+    "answer": 1,
+    "explanation": "Obstructed visibility can interfere with security and medical/suicide monitoring."
+  },
+  {
+    "module": "Facility Security Protocols",
+    "text": "Why should emergency equipment be checked routinely?",
+    "choices": [
+      "To ensure it is available and functional when needed",
+      "To increase storage space",
+      "To reduce training",
+      "Because inmates request it"
+    ],
+    "answer": 0,
+    "explanation": "Emergency equipment must work when an incident occurs."
+  },
+  {
+    "module": "Legal Responsibilities",
+    "text": "Which principle best supports equal treatment in jail operations?",
+    "choices": [
+      "Apply rules based on legitimate, objective factors rather than bias or favoritism",
+      "Use different rules based on personal dislike",
+      "Allow inmates to purchase favorable treatment",
+      "Avoid documenting exceptions"
+    ],
+    "answer": 0,
+    "explanation": "Consistent, unbiased application of rules supports lawful and professional operations."
+  },
+  {
+    "module": "Communication",
+    "text": "When receiving a radio message involving an emergency, a jailer should:",
+    "choices": [
+      "Acknowledge and communicate clearly according to radio procedure",
+      "Use slang no one understands",
+      "Ignore it until convenient",
+      "Broadcast confidential details unnecessarily"
+    ],
+    "answer": 0,
+    "explanation": "Clear, concise radio communication is critical during emergencies."
+  },
+  {
+    "module": "Intake Procedures",
+    "text": "If a newly admitted inmate cannot understand English well, staff should:",
+    "choices": [
+      "Pretend the inmate understood",
+      "Use authorized language-assistance resources when needed to communicate critical information",
+      "Have another random inmate interpret confidential medical information",
+      "Skip all screening questions"
+    ],
+    "answer": 1,
+    "explanation": "Meaningful communication may require authorized language assistance, especially for safety and medical screening."
+  },
+  {
+    "module": "Inmate Services",
+    "text": "A request for disability accommodation should be:",
+    "choices": [
+      "Automatically denied",
+      "Handled through applicable policy and legal requirements with attention to safety and access",
+      "Mocked",
+      "Treated as discipline"
+    ],
+    "answer": 1,
+    "explanation": "Facilities must consider legitimate disability-related needs under applicable requirements."
+  },
+  {
+    "module": "Emergency Procedures",
+    "text": "After an emergency is controlled, staff should:",
+    "choices": [
+      "Return to normal without any record",
+      "Complete required reports, account for people/equipment, and participate in follow-up as required",
+      "Delete logs",
+      "Avoid notifying supervisors"
+    ],
+    "answer": 1,
+    "explanation": "Post-incident accountability and documentation are part of emergency management."
+  },
+  {
+    "module": "Mental Health / Suicide",
+    "text": "Which statement is most appropriate if an inmate says “I have a plan to kill myself tonight”?",
+    "choices": [
+      "“You are just trying to get attention.”",
+      "“I’m taking that seriously. I’m getting help now.”",
+      "“Promise me you won’t and I’ll leave.”",
+      "“Tell me tomorrow.”"
+    ],
+    "answer": 1,
+    "explanation": "A stated plan indicates acute risk and requires immediate protective action."
+  },
+  {
+    "module": "Inmate Health Care",
+    "text": "An inmate complains of symptoms after using force was applied. Staff should:",
+    "choices": [
+      "Ignore the complaint because force was justified",
+      "Ensure appropriate medical assessment and document the complaint",
+      "Tell the inmate to file a grievance next month",
+      "Ask another inmate to decide"
+    ],
+    "answer": 1,
+    "explanation": "Medical needs should be assessed after force regardless of whether force was justified."
+  },
+  {
+    "module": "Classification",
+    "text": "Classification information should be shared:",
+    "choices": [
+      "With staff who need it for legitimate safety and operational purposes",
+      "With anyone who asks",
+      "On social media",
+      "With inmate families as gossip"
+    ],
+    "answer": 0,
+    "explanation": "Sensitive classification information should be limited to authorized need-to-know use."
+  },
+  {
+    "module": "Professionalism",
+    "text": "The best response when unsure about a procedure is to:",
+    "choices": [
+      "Guess",
+      "Consult current policy, training materials, or an appropriate supervisor",
+      "Ask an inmate what staff usually do",
+      "Do nothing and hide the issue"
+    ],
+    "answer": 1,
+    "explanation": "When unsure, staff should verify the correct procedure through authorized sources."
+  },
+  {
+    "module": "Documentation Procedures",
+    "text": "Which detail is most useful in an incident report?",
+    "choices": [
+      "Specific times, locations, actions, statements, and observations",
+      "Personal insults",
+      "Rumors with no source",
+      "Unrelated history"
+    ],
+    "answer": 0,
+    "explanation": "Specific factual detail makes reports useful and defensible."
+  }
+];
+
+</script><script>
 let session=[],answers=[],flags=[],idx=0,mode='exam',remaining=0,timerId=null,reviewOnly=false;const $=id=>document.getElementById(id);function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}function safeGet(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}}function safeSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}function show(id){['home','quiz','result'].forEach(x=>$(x).classList.toggle('hidden',x!==id))}function getMedical(){return window.QUESTION_BANK.filter(q=>/medical|health|suicide|mental|emergency|first aid|seizure|diabetic|bleed|shock|chok|CPR|AED|overdose|withdrawal|veteran/i.test(q.module+' '+q.text+' '+q.explanation))}function startExam(m){mode=m;reviewOnly=false;let pool=m==='medical'?getMedical():window.QUESTION_BANK;let n=m==='exam'?100:Math.min(20,pool.length);session=shuffle(pool).slice(0,n);answers=Array(n).fill(null);flags=Array(n).fill(false);idx=0;remaining=m==='exam'?5400:0;clearInterval(timerId);if(m==='exam'){timerId=setInterval(()=>{remaining--;renderTimer();if(remaining<=0){clearInterval(timerId);finish()}},1000)}show('quiz');render()}function startMissed(){let missed=safeGet('tcole1121_missed',[]);if(!missed.length){alert('No missed questions are saved yet. Complete a practice set first.');return}mode='missed';reviewOnly=false;session=shuffle(missed);answers=Array(session.length).fill(null);flags=Array(session.length).fill(false);idx=0;remaining=0;show('quiz');render()}function renderTimer(){if(mode!=='exam'){$('timer').textContent='Study';return}let m=Math.floor(remaining/60),s=remaining%60;$('timer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}function render(){let q=session[idx];$('modeLabel').textContent=mode==='exam'?'Exam Simulation':mode==='medical'?'Medical Review':mode==='missed'?'Missed Questions':'Study Mode';$('counter').textContent=(idx+1)+' / '+session.length;$('bar').style.width=((idx+1)/session.length*100)+'%';$('questionText').textContent=q.text;$('choices').innerHTML='';q.choices.forEach((c,i)=>{let b=document.createElement('button');b.className='choice'+(answers[idx]===i?' selected':'');b.innerHTML='<b>'+String.fromCharCode(65+i)+'.</b> '+c;b.onclick=()=>selectAnswer(i);$('choices').appendChild(b)});$('explanation').classList.add('hidden');$('explanation').innerHTML='';$('flagBtn').textContent=flags[idx]?'⚑ Flagged':'Flag';$('nextBtn').textContent=idx===session.length-1?'Finish':'Next →';renderTimer();renderNav()}function selectAnswer(i){answers[idx]=i;if(mode!=='exam'){let q=session[idx],buttons=[...$('choices').children];buttons.forEach((b,j)=>{b.classList.remove('selected');if(j===q.answer)b.classList.add('correct');if(j===i&&i!==q.answer)b.classList.add('wrong')});$('explanation').classList.remove('hidden');$('explanation').innerHTML='<b>Correct answer: '+String.fromCharCode(65+q.answer)+'. '+q.choices[q.answer]+'</b><br><br>'+q.explanation}else render();renderNav()}function prevQuestion(){if(idx>0){idx--;render()}}function nextQuestion(){if(idx===session.length-1){finish()}else{idx++;render()}}function toggleFlag(){flags[idx]=!flags[idx];render()}function renderNav(){let n=$('navgrid');n.innerHTML='';session.forEach((_,i)=>{let b=document.createElement('button');b.className='qnum'+(i===idx?' current':'')+(answers[i]!==null?' answered':'');b.textContent=i+1;b.onclick=()=>{idx=i;render()};n.appendChild(b)})}function finish(){clearInterval(timerId);let correct=0,wrong=0,unanswered=0,missed=[];session.forEach((q,i)=>{if(answers[i]===null){unanswered++;missed.push(q)}else if(answers[i]===q.answer)correct++;else{wrong++;missed.push(q)}});safeSet('tcole1121_missed',missed);let pct=Math.round(correct/session.length*100);if(mode==='exam'){let best=safeGet('tcole1121_best',null);if(best===null||pct>best)safeSet('tcole1121_best',pct)}$('scoreText').textContent=pct+'%';$('scoreNote').textContent=correct+' of '+session.length+' correct';$('correctStat').textContent=correct;$('wrongStat').textContent=wrong;$('unansweredStat').textContent=unanswered;buildReview(missed);show('result');loadBest()}function buildReview(missed){let r=$('reviewList');r.innerHTML='';missed.forEach((q,k)=>{let d=document.createElement('div');d.className='card';d.innerHTML='<b>Review '+(k+1)+'</b><div class="question" style="font-size:17px">'+q.text+'</div><div><b>Correct: '+String.fromCharCode(65+q.answer)+'. '+q.choices[q.answer]+'</b></div><div class="explain">'+q.explanation+'</div>';r.appendChild(d)})}function reviewMissed(){window.scrollTo(0,$('reviewList').offsetTop)}function goHome(){clearInterval(timerId);show('home');loadBest()}function loadBest(){let b=safeGet('tcole1121_best',null);$('bestScore').textContent=b===null?'No score saved yet':'Best score: '+b+'%'}function resetProgress(){if(confirm('Reset your saved best score and missed-question list?')){safeSet('tcole1121_best',null);safeSet('tcole1121_missed',[]);loadBest()}}loadBest();
 </script></main></body></html>
